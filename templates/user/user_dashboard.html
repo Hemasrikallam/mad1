@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Library User Dashboard</title>
+    <!-- Add any additional styles or links to external stylesheets here -->
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>E-Library User Dashboard</h1>
+    <h1>Hello {{ name }}</h1>
+    <!-- Display All Existing E-Books -->
+    <ul>
+        {% for book in books %}
+            <li>
+                <h1>{{ book[0] }}: {{ book[1] }} - {{ book[2] }} <img src="{{ book[3] }}" width="100" height="100"></h1>
+                <!-- Pass 'a' as a URL parameter -->
+                <a href="#" onclick="updateLink('{{ book[0] }}')" class="details-link hidden details-link-{{ book[0] }}">View Details</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div id="countdown"></div>
+    <form method="POST" action="/book_details"> 
+        <label for="a">Access Duration (seconds):</label>
+        <!-- Corrected the id attribute to match the JavaScript -->
+        <input type="number" id="a" name="a" min="1" value="5">
+        <label for="book-id">Book ID:</label>
+        <input type="number" id="book-id" name="book_id">
+    </form>
+    <button class="btn btn-primary redirect-button" onclick="requestBook('{{name}}')">Request</button>
+    <button class="btn btn-primary return-btn" onclick="returnBook('{{name}}')">Return</button>
+
+    <script>
+       function requestBook(name) {     
+            const bookId = document.getElementById("book-id").value;
+            const accessDuration = document.getElementById("a").value;
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/request_book", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        alert("Book requested successfully.");
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                }
+            };
+            const data = JSON.stringify({ book_id: bookId, username: name ,access_duration: accessDuration});
+            xhr.send(data);
+        }
+        function returnBook(name) {
+    const bookId = document.getElementById("book-id").value;
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/return_book", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.message === "view_details returned") {
+                alert("Book returned successfully. View details returned.");
+            } else {
+                alert("Error: " + response.message);
+            }
+        }
+    };
+    const data = JSON.stringify({ book_id: bookId, username: name });
+    xhr.send(data);
+}
+        let n = 0;
+        function updateLink(bookId) {
+            // Get the value of the input field
+            const durationInput = document.getElementById("a");
+            const accessDuration = parseInt(durationInput.value);
+            if (n >= 6) {
+                alert("You have reached the maximum simultaneous access limit.");
+                return;
+            }
+            n++;
+
+            // Construct the URL with the new value
+            const url = "/book_details/" + bookId + "/{{ name }}?a=" + accessDuration;
+
+            // Navigate to the constructed URL
+            window.location.href = url;
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+    // Keep track of timeout IDs for each book
+    const timeoutIds = {};
+    const username = '{{ session["username"] }}';
+    const redirectButtons = document.querySelectorAll(".redirect-button");
+
+    redirectButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            const bookId = document.getElementById("book-id").value;
+            const durationInput = document.getElementById("a");
+            const accessDuration = parseInt(durationInput.value) * 1000; // Convert seconds to milliseconds
+            if (n >= 6) {
+                alert("You have reached the maximum simultaneous access limit.");
+                return;
+            }
+            n++;
+            const detailsLinks = document.querySelectorAll(".details-link-" + bookId);
+            detailsLinks.forEach(function(link) {
+                link.classList.remove("hidden");
+            });
+            // Set the timeout for hiding the access link
+            timeoutIds[bookId] = setTimeout(function() {
+                detailsLinks.forEach(function(link) {
+                    link.classList.add("hidden");
+                });
+                n--;
+                // Call returnBook function when access duration is over
+                returnBook('{{name}}');
+            }, accessDuration);
+        });
+    });
+
+    const returnButtons = document.querySelectorAll(".return-btn");
+    returnButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            const bookId = document.getElementById("book-id").value;
+            const detailsLinks = document.querySelectorAll(".details-link-" + bookId);
+            detailsLinks.forEach(function(link) {
+                link.classList.add("hidden");
+            });
+            // Clear the timeout associated with this book
+            clearTimeout(timeoutIds[bookId]);
+            n--;
+        });
+    });
+});
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Details Book</title>
+</head>
+<body>
+    <h1>Edit Book</h1>
+    <form action="{{ url_for('lib_editmore', book_id1=book[0]) }}" method="POST">
+        <label for="details3">DETAILS:</label>
+        <textarea id="details3" name="details3" rows="10" cols="40">{{ book[1] }}</textarea>
+<br>
+        <label for="title3">TITLE:</label>
+        <input type="text" id="title3" name="title3" value="{{ book[2] }}">
+        <br>
+        <label for="author3">AUTHOR:</label>
+        <input type="text" id="author3" name="author3" value="{{ book[3] }}">
+        <br>
+        <button type="submit">Update</button>
+    </form>
+</body>
+</html>

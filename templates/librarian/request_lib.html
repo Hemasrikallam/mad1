@@ -1,0 +1,57 @@
+<!-- request_lib.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Books to Users</title>
+</head>
+<body>
+    <h1>Request Books to Users</h1>
+    <h2>Librarian Request Form</h2>
+    
+    <!-- Librarian Request Form -->
+    <form method="post" action="{{ url_for('request_lib') }}">
+        <label for="lib-book-id">Book ID:</label>
+        <input type="number" id="lib-book-id" name="lib-book-id">
+        
+        <label for="username">User:</label>
+        <select id="username" name="username">
+            {% for user in users %}
+                <option value="{{ user[1] }}">{{ user[1] }}</option>
+            {% endfor %}
+        </select>
+        <label for="access-time">Access Time (seconds):</label>
+        <input type="number" id="access-time" name="access-time" min="1" value="10">
+        
+        <input type="submit" value="Request">
+    </form>
+
+    <h2>User Panel</h2>
+    <!-- Display available books for users -->
+    <ul>
+        {% for book in books %}
+            <li>{{book[0]}}----{{ book[1] }} by {{ book[2] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+<script>
+    document.getElementById("request-lib-form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    
+    // Get the selected username
+    var username = document.getElementById("username").value;
+    
+    // Find buttons by class name
+    var requestButton = document.querySelector(".redirect-button");
+    var returnButton = document.querySelector(".return-btn");
+    
+    // Trigger button click event based on the action
+    if (event.target.getAttribute("action") === "{{ url_for('request_lib') }}") {
+        requestButton.click(); // Trigger click event for request button
+    } else {
+        returnButton.click(); // Trigger click event for return button
+    }
+});
+</script>
+</html>

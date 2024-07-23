@@ -1,0 +1,66 @@
+<!-- registration.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Librarian Dashboard</title>
+</head>
+<body>
+    <a href="{{ url_for('request_lib') }}">Request Books to Users</a>
+
+
+    <h1>Hello librarian</h1>
+    <h2>Books Issued to {{ selected_username }}</h2>
+    
+    <ul>
+        {% for book_issue in book_issues %}
+        <li>
+            <h4>Book ID: {{ book_issue[0] }}</h4> 
+            <p>Username: {{ book_issue[1] }}</p>
+            <p>Access Time: {{ book_issue[3] }}</p>
+            <!-- Add other relevant attributes as needed -->
+            
+        </li>
+    {% endfor %}
+      
+    </ul>
+
+    <form method="post" action="{{ url_for('lib_dashboard') }}">
+        <label for="selected_username">Select Username:</label>
+        <select id="selected_username" name="selected_username">
+            <option value="">-- Select Username --</option>
+            {% for user in users %}
+                <option value="{{ user[1] }}">{{ user[1] }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Show Books">
+    </form>
+   
+    {% for book in books %}
+            <li><h4>{{book[0]}}:--{{ book[1] }} - {{ book[2] }} <img src="{{ book[3] }}" width="100" height="100">
+                <form action="{{ url_for('lib_dashboard', book_id=book[0]) }}" method="post">
+                    <input type="hidden" name="delete_book" value="{{ book[0] }}">
+                    <button type="submit" >DELETE</button>
+                  </form> 
+                  <a href="{{ url_for('lib_edit', book_id=book[0]) }}" method="POST">edit</a>
+                 
+            </li>      
+                   
+           
+        {% endfor %}
+    <form method="post" action="{{ url_for('lib_dashboard') }}">
+        <label for="title">Add Book Title:</label>
+        <input type="text" id="title" name="title" >
+
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author">
+
+        <label for="image">Image URL:</label>
+        <input type="text" id="image" name="image">
+
+        <input type="submit" value="Add Book">
+    </form>
+</body>
+</html>

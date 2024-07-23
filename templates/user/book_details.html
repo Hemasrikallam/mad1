@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book[2] }} Details</title>
+    
+    <!-- Add any additional styles or links to external stylesheets here -->
+</head>
+<h1> hello {{name}} , check your book!</h1>
+    <script>
+    window.onload = function() {
+        const accessDuration = parseInt("{{ request.args.get('a') }}") || 0;
+
+        // Function to update countdown display
+        function updateCountdown(seconds) {
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.textContent = seconds;
+
+            if (seconds <= 0) {
+                window.history.back();
+            } else {
+                setTimeout(() => updateCountdown(seconds - 1), 1000);
+            }
+        }
+
+        // Start countdown
+        updateCountdown(accessDuration);
+    };
+   
+</script>
+<body>
+    <h1>{{ book[2] }} Details</h1>
+
+    <!-- Display Book Details -->
+    <h3 >Title: {{ book[2] }}</h3>
+    <p >Author: {{ book[3] }}</p>
+    <p>details: {{ book[1] }}</p>
+    <p> Access Duration: {{request.args.get('a')}} seconds</p>
+    <div id="countdown"></div>
+   
+  
+</body>
+
+</html>

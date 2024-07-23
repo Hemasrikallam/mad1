@@ -1,0 +1,25 @@
+<!-- registration.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Add book details</title>
+</head>
+<body>
+    <h1>ADD BOOK DETAILS</h1>
+    <form method="post" action="{{ url_for('lib_addbook',id=id) }}">
+        <label for="details">Add Book Title:</label>
+        <input type="text" id="details" name="details" >
+
+        <label for="title1">title1:</label>
+        <input type="text" id="title1" name="title1">
+
+        <label for="author1"> Author:</label>
+        <input type="text" id="author1" name="author1">
+
+        <input type="submit" value="Add Book details">
+    </form>
+</body>
+</html>

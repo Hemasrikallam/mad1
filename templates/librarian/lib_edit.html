@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book</title>
+</head>
+<body>
+    <h1>Edit Book</h1>
+    <form action="{{ url_for('lib_edit', book_id=book[0]) }}" method="post">
+        <label for="t">Title:</label>
+    <input type="textbox" id="t" name="t" value="{{ book[1] }}">
+    <br>
+    <label for="au">Author:</label>
+    <input type="text" id="au" name="au" value="{{ book[2] }}">
+    <br>
+    <label for="i">Image URL:</label>
+    <input type="text" id="i" name="i" value="{{ book[3] }}">
+    <br>
+    <button type="submit">Update</button>
+    </form>
+    <a href="{{ url_for('lib_editmore', book_id1=book[0]) }}" method="POST">EDIT MORE</a>
+</body>
+</html>
